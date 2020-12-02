@@ -15,6 +15,17 @@ namespace Space_Radiation
         double deepCharging;
         double totalDose;
         double shield = 0;
+        /*****************************************************************************
+        * @function name : Program
+        * @author : Kaguya
+        * @date : 2020/12/2 17:33
+        * @inparam : yuan——远地点，单位km
+        * @inparam : jin——近地点，单位km
+        * @inparam : qing——轨道倾角，单位°
+        * @outparam : 
+        * @last change : 
+        * @usage : 
+        *****************************************************************************/
         public Program(double yuan, double jin, double qing)
         {
             double c = (yuan - jin) / 2;
@@ -31,6 +42,15 @@ namespace Space_Radiation
             }
             updataData();
         }
+        /*****************************************************************************
+        * @function name : addTime
+        * @author : Kaguya
+        * @date : 2020/12/2 17:30
+        * @inparam : second 需要增加的时间，单位：秒
+        * @outparam : 
+        * @last change : 
+        * @usage : 让航天器运行给定的时间后，重新计算轨道位置和辐射效应
+        *****************************************************************************/
         public void addTime(int second)
         {
             position.addTime(second);
