@@ -1,4 +1,15 @@
-﻿using System;
+﻿/********************************************************************
+	created:	2020/12/03
+	created:	3:12:2020   13:07
+	filename: 	Program.cs
+	file path:	Space_Radiation
+	file base:	Program
+	file ext:	cs
+	author:		Kaguya
+	
+	purpose:	主类
+*********************************************************************/
+using System;
 
 namespace Space_Radiation
 {
@@ -24,7 +35,7 @@ namespace Space_Radiation
         * @inparam : qing——轨道倾角，单位°
         * @outparam : 
         * @last change : 
-        * @usage : 
+        * @usage : 根据给定的近地点、远地点、轨道倾角，初始化对象
         *****************************************************************************/
         public Program(double yuan, double jin, double qing)
         {
@@ -66,9 +77,9 @@ namespace Space_Radiation
             {
                 electronEnergy[i] = 0.01 + 0.01 * i;
             }
-            position.getDate();
-            position.getECIDateAndVelocity();
-            LLA = Position.XYZ2LLA(Position.getECEF(position.ECI, position.data));
+
+            LLA = position.getPosition();
+
             double high = LLA[2];
             maxModel model = new maxModel();
             double[,] spectrum = model.getFlux(high, Spectrum.getTheatM(LLA[1], LLA[0]) * 180 / Math.PI);
@@ -103,10 +114,29 @@ namespace Space_Radiation
 
             totalDose = TotalDose.getTotal(protonFlux, 0);
         }
+        /*****************************************************************************
+        * @function name : setShield
+        * @author : Kaguya
+        * @date : 2020/12/3 12:22
+        * @inparam : shield——等效铝屏蔽厚度
+        * @outparam : 
+        * @last change : 
+        * @usage : 根据给定的等效屏蔽厚度，更新粒子能谱和辐射效应
+        *****************************************************************************/
         public void setShield(double shield) { 
             this.shield = shield; 
             updataData();
         }
+        /*****************************************************************************
+        * @function name : getter
+        * @author : Kaguya
+        * @date : 2020/12/3 13:08
+        * @inparam : 
+        * @outparam : 
+        * @last change : 
+        * @usage : 分别获取质子、电子能量，质子、电子通量，位置，单粒子效应，位移损伤，
+        *          深层充电电位，总剂量效应
+        *****************************************************************************/
         public double[] getProtonEnergy() { return protonEnergy; }
         public double[] getElectronEnergy() { return electronEnergy; }
         public double[] getProtonFlux() { return protonFlux; }
