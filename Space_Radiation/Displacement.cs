@@ -16,7 +16,7 @@ using System;
 
 class displacementDamage
 {
-    public static double Integral(double[] energy, double[] flux, int material)
+    public static double getDisplacementDamage(double[] energy, double[] flux, int material)
     {
         double result = 0;
         for(int i = 0; i < energy.Length - 1; i++)

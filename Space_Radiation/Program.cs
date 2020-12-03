@@ -101,7 +101,7 @@ namespace Space_Radiation
         private void calculateRadiation()
         {
             singleEvent = SEE.getSEE(protonEnergy, protonFlux, electronEnergy, electronFlux, 1);
-            displacement = displacementDamage.Integral(protonEnergy, protonFlux, 1);
+            displacement = displacementDamage.getDisplacementDamage(protonEnergy, protonFlux, 1);
 
             double temp = 0;
             for (int i = 0; i < 500; i++)
