@@ -30,19 +30,19 @@ namespace Space_Radiation
         * @function name : Program
         * @author : Kaguya
         * @date : 2020/12/2 17:33
-        * @inparam : yuan——远地点，单位km
-        * @inparam : jin——近地点，单位km
-        * @inparam : qing——轨道倾角，单位°
+        * @inparam : apogee——远地点，单位km
+        * @inparam : perigee——近地点，单位km
+        * @inparam : dip——轨道倾角，单位°
         * @outparam : 
         * @last change : 
         * @usage : 根据给定的近地点、远地点、轨道倾角，初始化对象
         *****************************************************************************/
-        public Program(double yuan, double jin, double qing)
+        public Program(double apogee, double perigee, double dip)
         {
-            double c = (yuan - jin) / 2;
-            double a = c + 6371 + jin;
+            double c = (apogee - perigee) / 2;
+            double a = c + 6371 + perigee;
             int[] time = { 2020, 1, 1, 1, 1, 1 };
-            position = new Position(qing, 0, c / a, 0, a * 1000, 0, time);
+            position = new Position(dip, 0, c / a, 0, a * 1000, 0, time);
             for(int i = 0; i < 10; i++)
             {
                 protonEnergy[i] = 3 + i;
@@ -146,6 +146,7 @@ namespace Space_Radiation
         public double getDisplacementDamage() { return displacement; }
         public double getDeepCharging() { return deepCharging; }
         public double getTotalDose() { return totalDose; }
+
         static void Main(string[] args)
         {
             Program p = new Program(25000, 25000, 0);
