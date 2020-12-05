@@ -51,7 +51,7 @@ namespace Space_Radiation
             {
                 electronEnergy[i] = 0.01 + 0.01 * i;
             }
-            updataData();
+            updateData();
         }
         /*****************************************************************************
         * @function name : addTime
@@ -65,9 +65,9 @@ namespace Space_Radiation
         public void addTime(int second)
         {
             position.addTime(second);
-            updataData();
+            updateData();
         }
-        private void updataData()
+        private void updateData()
         {
             for (int i = 0; i < 10; i++)
             {
@@ -125,7 +125,7 @@ namespace Space_Radiation
         *****************************************************************************/
         public void setShield(double shield) { 
             this.shield = shield; 
-            updataData();
+            updateData();
         }
         /*****************************************************************************
         * @function name : getter
