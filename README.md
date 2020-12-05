@@ -3,7 +3,7 @@
 用于计算四种空间辐射，包括单粒子效应、位移损伤、深层充电效应、总剂量效应，基于C#编写。
 
 ## 代码框架
-* [Program](./Space_Radiation/Program.cs)  主程序
+* [SpaceRadiation](./Space_Radiation/SpaceRadiation.cs)  主程序
 * [DeepCharging](./Space_Radiation/DeepCharging.cs) 计算深层充电
 * [Displacement](./Space_Radiation/Displacement.cs) 计算位移损伤
 * [maxModel](./Space_Radiation/maxModel.cs) 太阳极大年模型，用于计算电子与质子能谱
