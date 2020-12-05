@@ -1,9 +1,9 @@
 ﻿/********************************************************************
 	created:	2020/12/03
 	created:	3:12:2020   13:07
-	filename: 	Program.cs
+	filename: 	SpaceRadiation.cs
 	file path:	Space_Radiation
-	file base:	Program
+	file base:	SpaceRadiation
 	file ext:	cs
 	author:		Kaguya
 	
@@ -13,7 +13,7 @@ using System;
 
 namespace Space_Radiation
 {
-    class Program
+    class SpaceRadiation
     {
         Position position;
         double[] LLA;
@@ -27,7 +27,7 @@ namespace Space_Radiation
         double totalDose;
         double shield = 0;
         /*****************************************************************************
-        * @function name : Program
+        * @function name : SpaceRadiation
         * @author : Kaguya
         * @date : 2020/12/2 17:33
         * @inparam : apogee——远地点，单位km
@@ -37,7 +37,7 @@ namespace Space_Radiation
         * @last change : 
         * @usage : 根据给定的近地点、远地点、轨道倾角，初始化对象
         *****************************************************************************/
-        public Program(double apogee, double perigee, double dip)
+        public SpaceRadiation(double apogee, double perigee, double dip)
         {
             double c = (apogee - perigee) / 2;
             double a = c + 6371 + perigee;
@@ -149,7 +149,7 @@ namespace Space_Radiation
 
         static void Main(string[] args)
         {
-            Program p = new Program(25000, 25000, 0);
+            SpaceRadiation p = new SpaceRadiation(25000, 25000, 0);
             p.setShield(0);
             for (int i = 0; i < 20; i++)
             {
