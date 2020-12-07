@@ -19,6 +19,7 @@ namespace Space_Radiation
         double[] LLA;
         double[] protonEnergy = new double[10];
         double[] protonFlux = new double[10];
+        double[] originProtonFlux;
         double[] electronEnergy = new double[500];
         double[] electronFlux = new double[500];
         double singleEvent;
@@ -27,6 +28,7 @@ namespace Space_Radiation
         double totalDose;
         double shield = 0;
         double[] geomagnetic;
+        int[] instrument = { 1, 1, 1 };
         /*****************************************************************************
         * @function name : SpaceRadiation
         * @author : Kaguya
@@ -94,6 +96,8 @@ namespace Space_Radiation
             }
             model.Dispose();
 
+            originProtonFlux = protonFlux;
+
             SEE.shield(shield, protonEnergy, protonFlux, SEE.ProtonLET);
             SEE.shield(shield, electronEnergy, electronFlux, SEE.ElectronLET);
 
@@ -102,8 +106,8 @@ namespace Space_Radiation
         }
         private void calculateRadiation()
         {
-            singleEvent = SEE.getSEE(protonEnergy, protonFlux, electronEnergy, electronFlux, 1);
-            displacement = displacementDamage.getDisplacementDamage(protonEnergy, protonFlux, 1);
+            singleEvent = SEE.getSEE(protonEnergy, protonFlux, electronEnergy, electronFlux, instrument[0]);
+            displacement = displacementDamage.getDisplacementDamage(protonEnergy, protonFlux, instrument[1]);
 
             double temp = 0;
             for (int i = 0; i < 500; i++)
@@ -112,9 +116,9 @@ namespace Space_Radiation
                 temp = electronFlux[i];
                 if (temp != 0) break;
             }
-            deepCharging = DeepCharging.deepCharging(temp, 1);
+            deepCharging = DeepCharging.deepCharging(temp, instrument[2]);
 
-            totalDose = TotalDose.getTotal(protonFlux, 0);
+            totalDose = TotalDose.getTotal(originProtonFlux, shield);
 
             int[] time = position.getTime();
             geomagnetic = Geomagnetic.getGeomagnetic(LLA[0], LLA[1], LLA[2], time[0] % 2000, time[1], time[2]);
@@ -130,6 +134,11 @@ namespace Space_Radiation
         *****************************************************************************/
         public void setShield(double shield) { 
             this.shield = shield; 
+            updateData();
+        }
+        public void setInstrument(int[] instrument)
+        {
+            this.instrument = instrument;
             updateData();
         }
         /*****************************************************************************
@@ -155,22 +164,21 @@ namespace Space_Radiation
         public void printInformation()
         {
             Console.WriteLine(String.Format("纬度：{0}°、经度：{1}°、高度：{2}km", LLA[0], LLA[1], LLA[2]));
-            Console.WriteLine("单粒子效应： " + getSEE());
-            Console.WriteLine("深层充电效应： " + getDeepCharging());
-            Console.WriteLine("位移损伤效应： " + getDisplacementDamage());
-            Console.WriteLine("总剂量效应： " + getTotalDose());
+            Console.WriteLine("单粒子效应： " + singleEvent);
+            Console.WriteLine("深层充电效应： " + deepCharging);
+            Console.WriteLine("位移损伤效应： " + displacement);
+            Console.WriteLine("总剂量效应： " + totalDose);
             Console.WriteLine(String.Format("地磁场的三个分量为{0} nT、{1} nT、{2} nT",
                 geomagnetic[0], geomagnetic[1], geomagnetic[2]));
         }
 
         static void Main(string[] args)
         {
-            SpaceRadiation p = new SpaceRadiation(25000, 25000, 0);
-            p.setShield(0);
-            for (int i = 0; i < 20; i++)
+            SpaceRadiation p = new SpaceRadiation(5000, 5000, 0);
+            for(int i = 0; i < 5; i++)
             {
                 p.printInformation();
-                p.addTime(7200);
+                p.addTime(3600);
             }
         }
     }
