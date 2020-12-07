@@ -1,6 +1,6 @@
 # Space_Radiation  
 ## 简介
-用于计算四种空间辐射，包括单粒子效应、位移损伤、深层充电效应、总剂量效应，基于C#编写。
+用于计算四种空间辐射，包括单粒子效应、位移损伤、深层充电效应、总剂量效应，基于C#编写，Visual Studio 2019测试通过。
 
 ## 代码框架
 * [SpaceRadiation](./Space_Radiation/SpaceRadiation.cs)  主程序
