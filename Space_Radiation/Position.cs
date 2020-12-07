@@ -267,6 +267,8 @@ class Position
 		calECIDateAndVelocity();
 		return XYZ2LLA(getECEF(ECI, data));
     }
+
+	public int[] getTime() { return data; }
 }
 
 

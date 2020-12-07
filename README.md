@@ -6,6 +6,7 @@
 * [SpaceRadiation](./Space_Radiation/SpaceRadiation.cs)  主程序
 * [DeepCharging](./Space_Radiation/DeepCharging.cs) 计算深层充电
 * [Displacement](./Space_Radiation/Displacement.cs) 计算位移损伤
+* [Geomagnetic](./Space_Radiation/Geomagnetic.cs) 计算地磁场
 * [maxModel](./Space_Radiation/maxModel.cs) 太阳极大年模型，用于计算电子与质子能谱
 * [minModel](./Space_Radiation/minModel.cs) 太阳极小年模型，用于计算电子与质子能谱
 * [Position](./Space_Radiation/Position.cs) 计算航天器位置，基于项目[one_Sgp4](https://github.com/1manprojects/one_Sgp4)编写
@@ -20,3 +21,7 @@
     Install-Package MathNet.Numerics 
 
 然后将Data目录下的数据文件复制到可执行文件的同一目录下
+
+## 更新日志
+2020-12-07 V1.1 添加了计算地磁场模块
+2020-12-02 V1.0 上传原始版本

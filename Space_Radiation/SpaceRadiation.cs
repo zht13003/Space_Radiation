@@ -26,6 +26,7 @@ namespace Space_Radiation
         double deepCharging;
         double totalDose;
         double shield = 0;
+        double[] geomagnetic;
         /*****************************************************************************
         * @function name : SpaceRadiation
         * @author : Kaguya
@@ -97,6 +98,7 @@ namespace Space_Radiation
             SEE.shield(shield, electronEnergy, electronFlux, SEE.ElectronLET);
 
             calculateRadiation();
+
         }
         private void calculateRadiation()
         {
@@ -113,6 +115,9 @@ namespace Space_Radiation
             deepCharging = DeepCharging.deepCharging(temp, 1);
 
             totalDose = TotalDose.getTotal(protonFlux, 0);
+
+            int[] time = position.getTime();
+            geomagnetic = Geomagnetic.getGeomagnetic(LLA[0], LLA[1], LLA[2], time[0] % 2000, time[1], time[2]);
         }
         /*****************************************************************************
         * @function name : setShield
@@ -135,7 +140,7 @@ namespace Space_Radiation
         * @outparam : 
         * @last change : 
         * @usage : 分别获取质子、电子能量，质子、电子通量，位置，单粒子效应，位移损伤，
-        *          深层充电电位，总剂量效应
+        *          深层充电电位，总剂量效应，地磁场
         *****************************************************************************/
         public double[] getProtonEnergy() { return protonEnergy; }
         public double[] getElectronEnergy() { return electronEnergy; }
@@ -146,6 +151,17 @@ namespace Space_Radiation
         public double getDisplacementDamage() { return displacement; }
         public double getDeepCharging() { return deepCharging; }
         public double getTotalDose() { return totalDose; }
+        public double[] getGeomagnetic() { return geomagnetic; }
+        public void printInformation()
+        {
+            Console.WriteLine(String.Format("纬度：{0}°、经度：{1}°、高度：{2}km", LLA[0], LLA[1], LLA[2]));
+            Console.WriteLine("单粒子效应： " + getSEE());
+            Console.WriteLine("深层充电效应： " + getDeepCharging());
+            Console.WriteLine("位移损伤效应： " + getDisplacementDamage());
+            Console.WriteLine("总剂量效应： " + getTotalDose());
+            Console.WriteLine(String.Format("地磁场的三个分量为{0} nT、{1} nT、{2} nT",
+                geomagnetic[0], geomagnetic[1], geomagnetic[2]));
+        }
 
         static void Main(string[] args)
         {
@@ -153,12 +169,7 @@ namespace Space_Radiation
             p.setShield(0);
             for (int i = 0; i < 20; i++)
             {
-                double[] position = p.getPosition();
-                Console.WriteLine(String.Format("当前位置为{0}°、{1}°、{2}km", position[0], position[1], position[2]));
-                Console.WriteLine("单粒子效应为 " + p.getSEE());
-                Console.WriteLine("深层充电效应为 " + p.getDeepCharging());
-                Console.WriteLine("位移损伤效应为 " + p.getDisplacementDamage());
-                Console.WriteLine("总剂量效应为 " + p.getTotalDose());
+                p.printInformation();
                 p.addTime(7200);
             }
         }
