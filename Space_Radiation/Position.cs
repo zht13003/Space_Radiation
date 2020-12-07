@@ -46,7 +46,7 @@ class Position
         this.flat = Convert.ToString(flat);
         data = time;
     }
-    public void getDate()
+    public void calculateDate()
 	{
 		aDouble = Convert.ToDouble(a);
 		T = 2 * Math.PI * Math.Sqrt(Math.Pow(aDouble, 3) / 6.67e-11 / 5.965e24);
@@ -263,7 +263,7 @@ class Position
 	}
 	public double[] getPosition()
     {
-		getDate();
+		calculateDate();
 		calECIDateAndVelocity();
 		return XYZ2LLA(getECEF(ECI, data));
     }
