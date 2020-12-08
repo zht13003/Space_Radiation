@@ -22,6 +22,8 @@ namespace Space_Radiation
         double[] originProtonFlux;
         double[] electronEnergy = new double[500];
         double[] electronFlux = new double[500];
+        double[] cosmicRaysEnergy = new double[100];
+        double[] cosmicRaysFlux = new double[100];
         double singleEvent;
         double displacement;
         double deepCharging;
@@ -53,6 +55,10 @@ namespace Space_Radiation
             for (int i = 0; i < 500; i++)
             {
                 electronEnergy[i] = 0.01 + 0.01 * i;
+                if (i < 100)
+                {
+                    cosmicRaysEnergy[i] = 0.1 * (i + 1) * 1000;
+                }
             }
             updateData();
         }
@@ -79,6 +85,10 @@ namespace Space_Radiation
             for (int i = 0; i < 500; i++)
             {
                 electronEnergy[i] = 0.01 + 0.01 * i;
+                if (i < 100)
+                {
+                    cosmicRaysEnergy[i] = 0.1 * (i + 1) * 1000;
+                }
             }
 
             LLA = position.getPosition();
@@ -101,12 +111,22 @@ namespace Space_Radiation
             SEE.shield(shield, protonEnergy, protonFlux, SEE.ProtonLET);
             SEE.shield(shield, electronEnergy, electronFlux, SEE.ElectronLET);
 
+            for(int i = 0; i < 100; i++)
+            {
+                cosmicRaysFlux[i] = Spectrum.getAlpha(LLA[2], LLA[1], LLA[0], 0.5,
+                        cosmicRaysEnergy[i] / 1000, 1, true) * 10000 * 6.28;
+            }
+
             calculateRadiation();
 
         }
         private void calculateRadiation()
         {
-            singleEvent = SEE.getSEE(protonEnergy, protonFlux, electronEnergy, electronFlux, instrument[0]);
+            double singleEventFromTrapped = SEE.getSEE(protonEnergy, protonFlux, instrument[0]);
+            double singleEventFromCosmic = SEE.getSEE(cosmicRaysEnergy, cosmicRaysFlux, instrument[0]);
+            singleEvent = singleEventFromCosmic + singleEventFromTrapped;
+            Console.WriteLine("高度："+LLA[2]+"，捕获带质子产生SEE：" + singleEventFromTrapped + "，宇宙线质子产生SEE：" + singleEventFromCosmic);
+
             displacement = displacementDamage.getDisplacementDamage(protonEnergy, protonFlux, instrument[1]);
 
             double temp = 0;
@@ -174,11 +194,9 @@ namespace Space_Radiation
 
         static void Main(string[] args)
         {
-            SpaceRadiation p = new SpaceRadiation(5000, 5000, 0);
-            for(int i = 0; i < 5; i++)
+            for(double i = 1000; i < 36000; i += 1000)
             {
-                p.printInformation();
-                p.addTime(3600);
+                SpaceRadiation p = new SpaceRadiation(i, i, 0);
             }
         }
     }

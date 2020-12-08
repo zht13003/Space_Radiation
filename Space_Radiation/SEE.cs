@@ -36,10 +36,9 @@ class SEE
     {
         return 1e-8 * (1 - Math.Exp(-Math.Pow((x - 0.001) / 20.0, 1)));
     }
-    public static double getSEE(double[] e1, double[] f1, double[] e2, double[] f2, int material)
+    public static double getSEE(double[] e1, double[] f1, int material)
     {
-        Neuron_network n1 = ElectronLET();
-        Neuron_network n2 = ProtonLET();
+        Neuron_network n = ProtonLET();
         double result = 0;
         for(int i = 0; i < e1.Length - 1; i++)
         {
@@ -48,43 +47,22 @@ class SEE
             switch(material)
             {
                 case 1:
-                    w[0] = Weibull_1(n1.input(e1[i]));
-                    w[1] = Weibull_1(n1.input(e1[i + 1]));
+                    w[0] = Weibull_1(n.input(e1[i]));
+                    w[1] = Weibull_1(n.input(e1[i + 1]));
                     break;
                 case 2:
-                    w[0] = Weibull_2(n1.input(e1[i]));
-                    w[1] = Weibull_2(n1.input(e1[i + 1]));
+                    w[0] = Weibull_2(n.input(e1[i]));
+                    w[1] = Weibull_2(n.input(e1[i + 1]));
                     break;
                 case 3:
-                    w[0] = Weibull_3(n1.input(e1[i]));
-                    w[1] = Weibull_3(n1.input(e1[i + 1]));
+                    w[0] = Weibull_3(n.input(e1[i]));
+                    w[1] = Weibull_3(n.input(e1[i + 1]));
                     break;
             }
-            result += (f1[i] * w[0] + f1[i + 1] * w[1]) * Math.Abs(n1.input(e1[i + 1]) - n1.input(e1[i])) / 2;
-        }
-        for (int i = 0; i < e2.Length - 1; i++)
-        {
-            if (e2[i] == 0) continue;
-            double[] w = { 0, 0 };
-            switch (material)
-            {
-                case 1:
-                    w[0] = Weibull_1(n2.input(e2[i]));
-                    w[1] = Weibull_1(n2.input(e2[i + 1]));
-                    break;
-                case 2:
-                    w[0] = Weibull_2(n2.input(e2[i]));
-                    w[1] = Weibull_2(n2.input(e2[i + 1]));
-                    break;
-                case 3:
-                    w[0] = Weibull_3(n2.input(e2[i]));
-                    w[1] = Weibull_3(n2.input(e2[i + 1]));
-                    break;
-            }
-            result += (f2[i] * w[0] + f2[i + 1] * w[1]) * Math.Abs(n2.input(e2[i + 1]) - n2.input(e2[i])) / 2;
+            result += (f1[i] * w[0] + f1[i + 1] * w[1]) * Math.Abs(n.input(e1[i + 1]) - n.input(e1[i])) / 2;
         }
 
-        return result;
+        return result * 6e6;
     }
     public static Neuron_network ElectronLET()
     {

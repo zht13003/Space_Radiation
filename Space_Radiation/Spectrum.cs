@@ -23,7 +23,7 @@ class Spectrum
             + Math.Cos(latitude) * Math.Sin(11.7 * Math.PI / 180) * Math.Cos(longtitude - 291 * Math.PI / 180));
     }
 
-    static double getAlpha(double h, double longtitude, double latitude, double phi, double Ek, int Z, bool model)
+    public static double getAlpha(double h, double longtitude, double latitude, double phi, double Ek, int Z, bool model)
         /*输入经纬度(角度)、高度km、太阳活动常数（0.5~1.1）、能量GeV，得到宇宙线模型的对应能量的α粒子（Z=2）或质子（Z=1）通量
         通量单位为m^-2*s^-1*sr^-1*MeV^-1
         高度为自地表起的高度
@@ -40,7 +40,6 @@ class Spectrum
         double denominator = Math.Pow(Ek + Em + Z * phi * 2, 2) - Math.Pow(Em, 2);
         double RCut = 14.9 * Math.Pow(1 + h / REarth, -2) * Math.Pow(Math.Cos(latitude), 4);
         double Primary_alpha;
-        Console.Out.WriteLine(Math.Pow(R / RCut, -r));
         if (model)
         {
             Primary_alpha = Unmod * (numerator / denominator) / (1 + Math.Pow(R / RCut, -r));
