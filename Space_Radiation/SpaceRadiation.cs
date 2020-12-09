@@ -125,7 +125,7 @@ namespace Space_Radiation
 
             deepCharging.calRadiation(electronEnergy, electronFlux, instrument[2]);
 
-            totalDose.calRadiation(protonEnergy, protonFlux, shield);
+            totalDose.calRadiation(protonEnergy, originProtonFlux, shield);
 
             int[] time = position.getTime();
             geomagnetic = Geomagnetic.getGeomagnetic(LLA[0], LLA[1], LLA[2], time[0] % 2000, time[1], time[2]);
