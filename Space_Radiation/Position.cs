@@ -93,6 +93,10 @@ class Position
             data[2]++;
         }
     }
+	public void setTime(int[] time)
+    {
+		data = time;
+    }
 	/*****************************************************************************
 	* @function name : calECIDateAndVelocity
 	* @author : Kaguya

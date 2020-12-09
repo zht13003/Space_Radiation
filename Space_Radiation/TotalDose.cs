@@ -1,14 +1,15 @@
 ﻿using System;
 
 
-class TotalDose
+class TotalDose : Space_Radiation.IRadiation
 {
-    public static double getTotal(double[] f, double shield)
+    double totalDose;
+    public void calRadiation(double[] energy, double[] flux, double shield)
     {
         //shield /= 3.704;
-        for(int i = 0; i < f.Length; i++)
+        for(int i = 0; i < energy.Length; i++)
     {
-        if (f[i] == 0) f[i] = 1;
+        if (energy[i] == 0) energy[i] = 1;
     }
         #region
         double[,] iw = { { 0.643244361694439  ,  0.401127448046976 ,- 0.0532964143252744 ,0.729200827919499 ,- 0.217019550718672 ,- 0.667249412993785 ,- 0.822037117892492,  0.915408058083275 ,  1.47160485651591 },
@@ -40,9 +41,24 @@ class TotalDose
         double YMIN = 0;
         #endregion
         Neuron_network_2 n = new Neuron_network_2(iw, lw, b1, b2, 20, XMAX, XMIN, YMAX, YMIN);
-        double[] input = { f[0], f[1], f[2], f[3], f[4], f[5], f[6], f[7], Math.Pow(10, shield) };
-        if (shield >= 6) return 0;
-        return n.input(input);
+        double[] input = { energy[0], energy[1], energy[2], energy[3], energy[4], energy[5], energy[6], energy[7], Math.Pow(10, shield) };
+        if (shield >= 6) totalDose = 0;
+        totalDose = n.input(input);
+    }
+
+    public void calRadiation(double[] energy, double[] flux, int instrument)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void calRadiation(double[] energy, double[] flux, double high, double latitude, double longitude, int instrument)
+    {
+        throw new NotImplementedException();
+    }
+
+    public double getRadiation()
+    {
+        return totalDose;
     }
 
     //private static void Main(string[] args)

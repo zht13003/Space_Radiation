@@ -13,6 +13,14 @@ using System;
 
 namespace Space_Radiation
 {
+    public interface IRadiation
+    {
+        double getRadiation();
+        void calRadiation(double[] energy, double[] flux, int instrument);
+        void calRadiation(double[] energy, double[] flux, double high, 
+            double latitude, double longitude, int instrument);
+        void calRadiation(double[] energy, double[] flux, double shield);
+    }
     class SpaceRadiation
     {
         Position position;
@@ -22,12 +30,10 @@ namespace Space_Radiation
         double[] originProtonFlux;
         double[] electronEnergy = new double[500];
         double[] electronFlux = new double[500];
-        double[] cosmicRaysEnergy = new double[100];
-        double[] cosmicRaysFlux = new double[100];
-        double singleEvent;
-        double displacement;
-        double deepCharging;
-        double totalDose;
+        SEE singleEffectEvent = new SEE();
+        DisplacementDamage displacement = new DisplacementDamage();
+        DeepCharging deepCharging = new DeepCharging();
+        TotalDose totalDose = new TotalDose();
         double shield = 0;
         double[] geomagnetic;
         int[] instrument = { 1, 1, 1 };
@@ -55,10 +61,6 @@ namespace Space_Radiation
             for (int i = 0; i < 500; i++)
             {
                 electronEnergy[i] = 0.01 + 0.01 * i;
-                if (i < 100)
-                {
-                    cosmicRaysEnergy[i] = 0.1 * (i + 1) * 1000;
-                }
             }
             updateData();
         }
@@ -76,6 +78,11 @@ namespace Space_Radiation
             position.addTime(second);
             updateData();
         }
+        public void setTime(int[] time)
+        {
+            position.setTime(time);
+            updateData();
+        }
         private void updateData()
         {
             for (int i = 0; i < 10; i++)
@@ -85,10 +92,6 @@ namespace Space_Radiation
             for (int i = 0; i < 500; i++)
             {
                 electronEnergy[i] = 0.01 + 0.01 * i;
-                if (i < 100)
-                {
-                    cosmicRaysEnergy[i] = 0.1 * (i + 1) * 1000;
-                }
             }
 
             LLA = position.getPosition();
@@ -104,41 +107,25 @@ namespace Space_Radiation
             {
                 electronFlux[i] = spectrum[1, i];
             }
-            model.Dispose();
 
             originProtonFlux = protonFlux;
 
             SEE.shield(shield, protonEnergy, protonFlux, SEE.ProtonLET);
             SEE.shield(shield, electronEnergy, electronFlux, SEE.ElectronLET);
 
-            for(int i = 0; i < 100; i++)
-            {
-                cosmicRaysFlux[i] = Spectrum.getAlpha(LLA[2], LLA[1], LLA[0], 0.5,
-                        cosmicRaysEnergy[i] / 1000, 1, true) * 10000 * 6.28;
-            }
-
             calculateRadiation();
 
         }
         private void calculateRadiation()
         {
-            double singleEventFromTrapped = SEE.getSEE(protonEnergy, protonFlux, instrument[0]);
-            double singleEventFromCosmic = SEE.getSEE(cosmicRaysEnergy, cosmicRaysFlux, instrument[0]);
-            singleEvent = singleEventFromCosmic + singleEventFromTrapped;
-            Console.WriteLine("高度："+LLA[2]+"，捕获带质子产生SEE：" + singleEventFromTrapped + "，宇宙线质子产生SEE：" + singleEventFromCosmic);
+            singleEffectEvent.calRadiation(protonEnergy, protonFlux, LLA[2], LLA[0], LLA[1], instrument[0]);
+            //Console.WriteLine("高度："+LLA[2]+"，捕获带质子产生SEE：" + singleEventFromTrapped + "，宇宙线质子产生SEE：" + singleEventFromCosmic);
 
-            displacement = displacementDamage.getDisplacementDamage(protonEnergy, protonFlux, instrument[1]);
+            displacement.calRadiation(protonEnergy, protonFlux, instrument[1]);
 
-            double temp = 0;
-            for (int i = 0; i < 500; i++)
-            {
-                if (electronFlux[i] == 0) continue;
-                temp = electronFlux[i];
-                if (temp != 0) break;
-            }
-            deepCharging = DeepCharging.deepCharging(temp, instrument[2]);
+            deepCharging.calRadiation(electronEnergy, electronFlux, instrument[2]);
 
-            totalDose = TotalDose.getTotal(originProtonFlux, shield);
+            totalDose.calRadiation(protonEnergy, protonFlux, shield);
 
             int[] time = position.getTime();
             geomagnetic = Geomagnetic.getGeomagnetic(LLA[0], LLA[1], LLA[2], time[0] % 2000, time[1], time[2]);
@@ -176,27 +163,28 @@ namespace Space_Radiation
         public double[] getProtonFlux() { return protonFlux; }
         public double[] getElectronFlux() { return electronFlux; }
         public double[] getPosition() { return LLA; }
-        public double getSEE() { return singleEvent; }
-        public double getDisplacementDamage() { return displacement; }
-        public double getDeepCharging() { return deepCharging; }
-        public double getTotalDose() { return totalDose; }
+        public double getSEE() { return singleEffectEvent.getRadiation(); }
+        public double getDisplacementDamage() { return displacement.getRadiation(); }
+        public double getDeepCharging() { return deepCharging.getRadiation(); }
+        public double getTotalDose() { return totalDose.getRadiation(); }
         public double[] getGeomagnetic() { return geomagnetic; }
         public void printInformation()
         {
             Console.WriteLine(String.Format("纬度：{0}°、经度：{1}°、高度：{2}km", LLA[0], LLA[1], LLA[2]));
-            Console.WriteLine("单粒子效应： " + singleEvent);
-            Console.WriteLine("深层充电效应： " + deepCharging);
-            Console.WriteLine("位移损伤效应： " + displacement);
-            Console.WriteLine("总剂量效应： " + totalDose);
+            Console.WriteLine("单粒子效应： " + getSEE());
+            Console.WriteLine("深层充电效应： " + getDeepCharging());
+            Console.WriteLine("位移损伤效应： " + getDisplacementDamage());
+            Console.WriteLine("总剂量效应： " + getTotalDose());
             Console.WriteLine(String.Format("地磁场的三个分量为{0} nT、{1} nT、{2} nT",
                 geomagnetic[0], geomagnetic[1], geomagnetic[2]));
         }
 
         static void Main(string[] args)
         {
-            for(double i = 1000; i < 36000; i += 1000)
+            for(double i =1000;i<36000;i+=1000)
             {
                 SpaceRadiation p = new SpaceRadiation(i, i, 0);
+                p.printInformation();
             }
         }
     }

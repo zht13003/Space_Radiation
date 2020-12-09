@@ -14,36 +14,9 @@
 *********************************************************************/
 using System;
 
-class displacementDamage
+class DisplacementDamage : Space_Radiation.IRadiation
 {
-    public static double getDisplacementDamage(double[] energy, double[] flux, int material)
-    {
-        double result = 0;
-        for(int i = 0; i < energy.Length - 1; i++)
-        {
-            //Console.Out.WriteLine(n.input(energy[i]));
-            if (energy[i] == 0) continue;
-            double[] w = { 0, 0 };
-            switch (material)
-            {
-                case 1:
-                    w[0] = Section_1(getNIEL(energy[i]));
-                    w[1] = Section_1(getNIEL(energy[i + 1]));
-                    break;
-                case 2:
-                    w[0] = Section_2(getNIEL(energy[i]));
-                    w[1] = Section_2(getNIEL(energy[i + 1]));
-                    break;
-                case 3:
-                    w[0] = Section_3(getNIEL(energy[i]));
-                    w[1] = Section_3(getNIEL(energy[i + 1]));
-                    break;
-            }
-            result += (flux[i] * w[0] + flux[i + 1] * w[1]) * Math.Abs(getNIEL(energy[i + 1]) - getNIEL(energy[i])) / 2;
-
-        }
-        return result * 256 * 256;
-    }
+    double displacement;
     static double Section_1(double x)
     {
         //return 5.05e-7 * (1 - Math.Exp(Math.Pow((-x + 0.1725) / 60.0, 0.0975)));
@@ -66,6 +39,47 @@ class displacementDamage
         double b2 = -4.96372881763975;
         Neuron_network NIEL_network = new Neuron_network(iw, lw, b1, b2, 5, 4.0, -3.699, 0.7497, -2.9431, true, true);
         return NIEL_network.input(x);
+    }
+
+    public double getRadiation()
+    {
+        return displacement;
+    }
+
+    public void calRadiation(double[] energy, double[] flux, int instrument)
+    {
+        double result = 0;
+        for (int i = 0; i < energy.Length - 1; i++)
+        {
+            //Console.Out.WriteLine(n.input(energy[i]));
+            if (energy[i] == 0) continue;
+            double[] w = { 0, 0 };
+            switch (instrument)
+            {
+                case 1:
+                    w[0] = Section_1(getNIEL(energy[i]));
+                    w[1] = Section_1(getNIEL(energy[i + 1]));
+                    break;
+                case 2:
+                    w[0] = Section_2(getNIEL(energy[i]));
+                    w[1] = Section_2(getNIEL(energy[i + 1]));
+                    break;
+                case 3:
+                    w[0] = Section_3(getNIEL(energy[i]));
+                    w[1] = Section_3(getNIEL(energy[i + 1]));
+                    break;
+            }
+            result += (flux[i] * w[0] + flux[i + 1] * w[1]) * Math.Abs(getNIEL(energy[i + 1]) - getNIEL(energy[i])) / 2;
+
+        }
+        displacement = result * 256 * 256;
+    }
+    public void calRadiation(double[] energy, double[] flux, double high,
+            double latitude, double longitude, int instrument)
+    { throw new NotImplementedException(); }
+    public void calRadiation(double[] energy, double[] flux, double shield)
+    {
+        throw new NotImplementedException();
     }
 }
 
