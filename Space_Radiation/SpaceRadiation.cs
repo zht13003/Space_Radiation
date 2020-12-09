@@ -25,11 +25,8 @@ namespace Space_Radiation
     {
         Position position;
         double[] LLA;
-        double[] protonEnergy = new double[10];
-        double[] protonFlux = new double[10];
+        Spectrum spectrum = new Spectrum();
         double[] originProtonFlux;
-        double[] electronEnergy = new double[500];
-        double[] electronFlux = new double[500];
         SEE singleEffectEvent = new SEE();
         DisplacementDamage displacement = new DisplacementDamage();
         DeepCharging deepCharging = new DeepCharging();
@@ -54,14 +51,6 @@ namespace Space_Radiation
             double a = c + 6371 + perigee;
             int[] time = { 2020, 1, 1, 1, 1, 1 };
             position = new Position(dip, 0, c / a, 0, a * 1000, 0, time);
-            for(int i = 0; i < 10; i++)
-            {
-                protonEnergy[i] = 3 + i;
-            }
-            for (int i = 0; i < 500; i++)
-            {
-                electronEnergy[i] = 0.01 + 0.01 * i;
-            }
             updateData();
         }
         /*****************************************************************************
@@ -85,47 +74,30 @@ namespace Space_Radiation
         }
         private void updateData()
         {
-            for (int i = 0; i < 10; i++)
-            {
-                protonEnergy[i] = 3 + i;
-            }
-            for (int i = 0; i < 500; i++)
-            {
-                electronEnergy[i] = 0.01 + 0.01 * i;
-            }
+            spectrum.reflashEnergy();
 
             LLA = position.getPosition();
 
-            double high = LLA[2];
-            maxModel model = new maxModel();
-            double[,] spectrum = model.getFlux(high, Spectrum.getTheatM(LLA[1], LLA[0]) * 180 / Math.PI);
-            for(int i = 0; i < 10; i++)
-            {
-                protonFlux[i] = spectrum[3, i];
-            }
-            for (int i = 0; i < 500; i++)
-            {
-                electronFlux[i] = spectrum[1, i];
-            }
+            spectrum.calFlux(LLA[2], LLA[0], LLA[1]);
 
-            originProtonFlux = protonFlux;
+            originProtonFlux = spectrum.getProtonFlux();
 
-            SEE.shield(shield, protonEnergy, protonFlux, SEE.ProtonLET);
-            SEE.shield(shield, electronEnergy, electronFlux, SEE.ElectronLET);
+            SEE.shield(shield, getProtonEnergy(), getProtonFlux(), SEE.ProtonLET);
+            SEE.shield(shield, getElectronEnergy(), getElectronFlux(), SEE.ElectronLET);
 
             calculateRadiation();
 
         }
         private void calculateRadiation()
         {
-            singleEffectEvent.calRadiation(protonEnergy, protonFlux, LLA[2], LLA[0], LLA[1], instrument[0]);
+            singleEffectEvent.calRadiation(spectrum.getProtonEnergy(), spectrum.getProtonFlux(), LLA[2], LLA[0], LLA[1], instrument[0]);
             //Console.WriteLine("高度："+LLA[2]+"，捕获带质子产生SEE：" + singleEventFromTrapped + "，宇宙线质子产生SEE：" + singleEventFromCosmic);
 
-            displacement.calRadiation(protonEnergy, protonFlux, instrument[1]);
+            displacement.calRadiation(spectrum.getProtonEnergy(), spectrum.getProtonFlux(), instrument[1]);
 
-            deepCharging.calRadiation(electronEnergy, electronFlux, instrument[2]);
+            deepCharging.calRadiation(spectrum.getElectronEnergy(), spectrum.getElectronFlux(), instrument[2]);
 
-            totalDose.calRadiation(protonEnergy, originProtonFlux, shield);
+            totalDose.calRadiation(spectrum.getProtonEnergy(), originProtonFlux, shield);
 
             int[] time = position.getTime();
             geomagnetic = Geomagnetic.getGeomagnetic(LLA[0], LLA[1], LLA[2], time[0] % 2000, time[1], time[2]);
@@ -158,10 +130,10 @@ namespace Space_Radiation
         * @usage : 分别获取质子、电子能量，质子、电子通量，位置，单粒子效应，位移损伤，
         *          深层充电电位，总剂量效应，地磁场
         *****************************************************************************/
-        public double[] getProtonEnergy() { return protonEnergy; }
-        public double[] getElectronEnergy() { return electronEnergy; }
-        public double[] getProtonFlux() { return protonFlux; }
-        public double[] getElectronFlux() { return electronFlux; }
+        public double[] getProtonEnergy() { return spectrum.getProtonEnergy(); }
+        public double[] getElectronEnergy() { return spectrum.getElectronEnergy(); }
+        public double[] getProtonFlux() { return spectrum.getProtonFlux(); }
+        public double[] getElectronFlux() { return spectrum.getElectronFlux(); }
         public double[] getPosition() { return LLA; }
         public double getSEE() { return singleEffectEvent.getRadiation(); }
         public double getDisplacementDamage() { return displacement.getRadiation(); }
@@ -181,11 +153,10 @@ namespace Space_Radiation
 
         static void Main(string[] args)
         {
-            for(double i =1000;i<36000;i+=1000)
-            {
-                SpaceRadiation p = new SpaceRadiation(i, i, 0);
-                p.printInformation();
-            }
+            SpaceRadiation p = new SpaceRadiation(25000, 25000, 0);
+            p.printInformation();
+            p.setShield(2);
+            p.printInformation();
         }
     }
 }
