@@ -26,7 +26,6 @@ namespace Space_Radiation
         Position position;
         double[] LLA;
         Spectrum spectrum = new Spectrum();
-        double[] originProtonFlux;
         SEE singleEffectEvent = new SEE();
         DisplacementDamage displacement = new DisplacementDamage();
         DeepCharging deepCharging = new DeepCharging();
@@ -80,7 +79,8 @@ namespace Space_Radiation
 
             spectrum.calFlux(LLA[2], LLA[0], LLA[1]);
 
-            originProtonFlux = spectrum.getProtonFlux();
+            //由于总剂量效应需要输入未经屏蔽的电子能谱，所以先于shield计算
+            totalDose.calRadiation(spectrum.getProtonEnergy(), spectrum.getProtonFlux(), shield);
 
             SEE.shield(shield, getProtonEnergy(), getProtonFlux(), SEE.ProtonLET);
             SEE.shield(shield, getElectronEnergy(), getElectronFlux(), SEE.ElectronLET);
@@ -97,7 +97,7 @@ namespace Space_Radiation
 
             deepCharging.calRadiation(spectrum.getElectronEnergy(), spectrum.getElectronFlux(), instrument[2]);
 
-            totalDose.calRadiation(spectrum.getProtonEnergy(), originProtonFlux, shield);
+            //totalDose.calRadiation(spectrum.getProtonEnergy(), originProtonFlux, shield);
 
             int[] time = position.getTime();
             geomagnetic = Geomagnetic.getGeomagnetic(LLA[0], LLA[1], LLA[2], time[0] % 2000, time[1], time[2]);
@@ -153,10 +153,13 @@ namespace Space_Radiation
 
         static void Main(string[] args)
         {
-            SpaceRadiation p = new SpaceRadiation(25000, 25000, 0);
-            p.printInformation();
-            p.setShield(2);
-            p.printInformation();
+            for(double i =1000;i<36000;i+=1000)
+            {
+                SpaceRadiation p = new SpaceRadiation(i, i, 90);
+                p.setInstrument(new int[] { 2, 2, 2 });
+                //Console.WriteLine(String.Format("{0} {1} {2} {3}", p.getSEE(), p.getDeepCharging(), p.getDisplacementDamage(), p.getTotalDose()));
+                Console.WriteLine(String.Format("{0} {1} {2}",  p.getSEE(), p.getDeepCharging(),p.getDisplacementDamage()));
+            }
         }
     }
 }

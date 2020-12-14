@@ -7,10 +7,11 @@ class TotalDose : Space_Radiation.IRadiation
     public void calRadiation(double[] energy, double[] flux, double shield)
     {
         //shield /= 3.704;
-        for(int i = 0; i < energy.Length; i++)
-    {
-        if (energy[i] == 0) energy[i] = 1;
-    }
+        for(int i = 0; i < flux.Length; i++)
+        {
+            if (flux[i] == 0) flux[i] = 1;
+        }
+        //Console.WriteLine(flux[0]);
         #region
         double[,] iw = { { 0.643244361694439  ,  0.401127448046976 ,- 0.0532964143252744 ,0.729200827919499 ,- 0.217019550718672 ,- 0.667249412993785 ,- 0.822037117892492,  0.915408058083275 ,  1.47160485651591 },
             { 0.740707889840807,- 1.07729851095437 ,- 0.370051326070843 ,- 0.638016335156878 , 0.548679955839364 ,  0.468186113311693 ,  0.810616510859444  , 0.102773065750966  , 0.0585081931539878 },
@@ -41,7 +42,7 @@ class TotalDose : Space_Radiation.IRadiation
         double YMIN = 0;
         #endregion
         Neuron_network_2 n = new Neuron_network_2(iw, lw, b1, b2, 20, XMAX, XMIN, YMAX, YMIN);
-        double[] input = { energy[0], energy[1], energy[2], energy[3], energy[4], energy[5], energy[6], energy[7], Math.Pow(10, shield) };
+        double[] input = { flux[0], flux[1], flux[2], flux[3], flux[4], flux[5], flux[6], flux[7], Math.Pow(10, shield) };
         if (shield >= 6) totalDose = 0;
         totalDose = n.input(input);
     }

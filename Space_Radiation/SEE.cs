@@ -76,6 +76,10 @@ class SEE : Space_Radiation.IRadiation
     {
         return 1e-9 * (1 - Math.Exp(-Math.Pow((x - 0.001) / 20.0, 1)));
     }
+    static double Weibull_4(double x)
+    {
+        return 1e-1 * (1 - Math.Exp(-Math.Pow((x - 0) / 20.0, 1)));
+    }
 
     public void calRadiation(double[] protonEnergy, double[] protonFlux, 
         double high, double latitude, double longitude, int instrument)
@@ -146,6 +150,10 @@ class SEE : Space_Radiation.IRadiation
                 case 3:
                     w[0] = Weibull_3(n.input(e1[i]));
                     w[1] = Weibull_3(n.input(e1[i + 1]));
+                    break;
+                case 4:
+                    w[0] = Weibull_4(n.input(e1[i]));
+                    w[1] = Weibull_4(n.input(e1[i + 1]));
                     break;
             }
             result += (f1[i] * w[0] + f1[i + 1] * w[1]) * Math.Abs(n.input(e1[i + 1]) - n.input(e1[i])) / 2;
