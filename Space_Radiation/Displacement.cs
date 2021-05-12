@@ -45,7 +45,6 @@ class DisplacementDamage : Space_Radiation.IRadiation
     {
         return displacement;
     }
-
     public void calRadiation(double[] energy, double[] flux, int instrument)
     {
         double result = 0;

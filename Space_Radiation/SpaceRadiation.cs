@@ -93,6 +93,7 @@ namespace Space_Radiation
             singleEffectEvent.calRadiation(spectrum.getProtonEnergy(), spectrum.getProtonFlux(), LLA[2], LLA[0], LLA[1], instrument[0]);
             //Console.WriteLine("高度："+LLA[2]+"，捕获带质子产生SEE：" + singleEventFromTrapped + "，宇宙线质子产生SEE：" + singleEventFromCosmic);
 
+            //displacement.getTotalDis(spectrum.getProtonEnergy(), spectrum.getProtonFlux(), LLA[2], LLA[0], LLA[1], instrument[1]);
             displacement.calRadiation(spectrum.getProtonEnergy(), spectrum.getProtonFlux(), instrument[1]);
 
             deepCharging.calRadiation(spectrum.getElectronEnergy(), spectrum.getElectronFlux(), instrument[2]);
@@ -153,12 +154,13 @@ namespace Space_Radiation
 
         static void Main(string[] args)
         {
-            for(double i =1000;i<36000;i+=1000)
+            SpaceRadiation p = new SpaceRadiation(7000, 7000, 40);
+            p.setShield(1);
+            p.setInstrument(new int[] { 3, 1, 1 });
+            for (int i = 0; i < 100; i++)
             {
-                SpaceRadiation p = new SpaceRadiation(i, i, 90);
-                p.setInstrument(new int[] { 2, 2, 2 });
-                //Console.WriteLine(String.Format("{0} {1} {2} {3}", p.getSEE(), p.getDeepCharging(), p.getDisplacementDamage(), p.getTotalDose()));
-                Console.WriteLine(String.Format("{0} {1} {2}",  p.getSEE(), p.getDeepCharging(),p.getDisplacementDamage()));
+                p.addTime(600);
+                p.printInformation();
             }
         }
     }

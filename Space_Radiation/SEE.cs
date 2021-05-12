@@ -67,7 +67,7 @@ class SEE : Space_Radiation.IRadiation
         double b2 = -5.49547459813758;
         Neuron_network weibull = new Neuron_network(iw, lw, b1, b2, 5, 112.0, 1.1, -6.8327, -11.1791, false, false);
         return Math.Pow(10, weibull.input(x));
-    }
+    }//LET阈值，饱和截面
     static double Weibull_2(double x)
     {
         return 2e-8 * (1 - Math.Exp(-Math.Pow((x - 0.001) / 20.0, 1)));
@@ -99,7 +99,7 @@ class SEE : Space_Radiation.IRadiation
 
         singleEffectEvent = singleEventFromCosmic + singleEventFromTrapped;
     }
-    static double getAlpha(double h, double longtitude, double latitude, double phi, double Ek, int Z, bool model)
+    public static double getAlpha(double h, double longtitude, double latitude, double phi, double Ek, int Z, bool model)
     /*输入经纬度(角度)、高度km、太阳活动常数（0.5~1.1）、能量GeV，得到宇宙线模型的对应能量的α粒子（Z=2）或质子（Z=1）通量
     通量单位为m^-2*s^-1*sr^-1*MeV^-1
     高度为自地表起的高度
