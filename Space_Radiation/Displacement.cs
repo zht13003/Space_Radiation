@@ -80,5 +80,10 @@ class DisplacementDamage : Space_Radiation.IRadiation
     {
         throw new NotImplementedException();
     }
+
+    public void calRadiation(double h, double longitude, double latitude, int instrument)
+    {
+        throw new NotImplementedException();
+    }
 }
 

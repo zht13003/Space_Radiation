@@ -1,6 +1,6 @@
 ﻿/********************************************************************
 	created:	2020/12/03
-	created:	3:12:2020   13:07
+	created:	3:12:2020   13:01
 	filename: 	SpaceRadiation.cs
 	file path:	Space_Radiation
 	file base:	SpaceRadiation
@@ -10,6 +10,8 @@
 	purpose:	主类
 *********************************************************************/
 using System;
+using System.IO;
+using System.Text;
 
 namespace Space_Radiation
 {
@@ -20,6 +22,7 @@ namespace Space_Radiation
         void calRadiation(double[] energy, double[] flux, double high, 
             double latitude, double longitude, int instrument);
         void calRadiation(double[] energy, double[] flux, double shield);
+        void calRadiation(double h, double longitude, double latitude, int instrument);
     }
     class SpaceRadiation
     {
@@ -55,7 +58,7 @@ namespace Space_Radiation
         /*****************************************************************************
         * @function name : addTime
         * @author : Kaguya
-        * @date : 2020/12/2 17:30
+        * @date : 2020/12/2 17:30,         
         * @inparam : second 需要增加的时间，单位：秒
         * @outparam : 
         * @last change : 
@@ -96,7 +99,7 @@ namespace Space_Radiation
             //displacement.getTotalDis(spectrum.getProtonEnergy(), spectrum.getProtonFlux(), LLA[2], LLA[0], LLA[1], instrument[1]);
             displacement.calRadiation(spectrum.getProtonEnergy(), spectrum.getProtonFlux(), instrument[1]);
 
-            deepCharging.calRadiation(spectrum.getElectronEnergy(), spectrum.getElectronFlux(), instrument[2]);
+            deepCharging.calRadiation(LLA[2], LLA[1], LLA[0], instrument[2]);
 
             //totalDose.calRadiation(spectrum.getProtonEnergy(), originProtonFlux, shield);
 
@@ -124,7 +127,7 @@ namespace Space_Radiation
         /*****************************************************************************
         * @function name : getter
         * @author : Kaguya
-        * @date : 2020/12/3 13:08
+        * @date : 2020/12/3 13:01
         * @inparam : 
         * @outparam : 
         * @last change : 
@@ -154,14 +157,13 @@ namespace Space_Radiation
 
         static void Main(string[] args)
         {
-            SpaceRadiation p = new SpaceRadiation(7000, 7000, 40);
-            p.setShield(1);
-            p.setInstrument(new int[] { 3, 1, 1 });
-            for (int i = 0; i < 100; i++)
+            for(int i = 100;i < 36500; i += 100)
             {
-                p.addTime(600);
-                p.printInformation();
+                SpaceRadiation s = new SpaceRadiation(i, i, 0);
+                s.setInstrument(new int[] { 1, 1, 2 });
+                Console.WriteLine(s.getDeepCharging());
             }
+
         }
     }
 }

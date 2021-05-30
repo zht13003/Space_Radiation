@@ -78,7 +78,7 @@ class SEE : Space_Radiation.IRadiation
     }
     static double Weibull_4(double x)
     {
-        return 1e-1 * (1 - Math.Exp(-Math.Pow((x - 0) / 20.0, 1)));
+        return 1e-8 * (1 - Math.Exp(-Math.Pow((x - 1) / 20.0, 1)));
     }
 
     public void calRadiation(double[] protonEnergy, double[] protonFlux, 
@@ -208,6 +208,11 @@ class SEE : Space_Radiation.IRadiation
         throw new NotImplementedException();
     }
     public void calRadiation(double[] energy, double[] flux, double shield)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void calRadiation(double h, double longitude, double latitude, int instrument)
     {
         throw new NotImplementedException();
     }

@@ -37,11 +37,11 @@ namespace Space_Radiation
             }
             return 10;
         }
-        public static void Main(string[] args)
-        {
-            SpaceRadiation s = new SpaceRadiation(4000, 4000, 0);
-            for(int i = 0;i < 10;i++)
-                Console.WriteLine("发生效应的年份：" + timeOfOccurrence(s.getSEE(), 4300, 5e7));
-        }
+        //public static void Main(string[] args)
+        //{
+        //    SpaceRadiation s = new SpaceRadiation(4000, 4000, 0);
+        //    for(int i = 0;i < 10;i++)
+        //        Console.WriteLine("发生效应的年份：" + timeOfOccurrence(s.getSEE(), 4300, 5e7));
+        //}
     }
 }

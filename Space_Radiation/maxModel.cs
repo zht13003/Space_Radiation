@@ -412,10 +412,6 @@ sealed class maxModel : IDisposable
         bottomF = RE * RE * RE * RE * RE * RE;
         bottomF = (float)(4 - (BetaValueF * BetaValueF * bottomF / (3.06e4 * 3.06e4)));
         Lvalue = (float)(3 * Math.Sqrt(RE * RE) / bottomF);
-        if(Lvalue>4.9 && Lvalue < 5.1)
-        {
-            Console.WriteLine(Lvalue);
-        }
         BB0 = (float)((BetaValueF * Lvalue * Lvalue) * (Lvalue / 3.06e4));
 
         MAP = MAPELTNS;
